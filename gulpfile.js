@@ -79,9 +79,7 @@ gulp.task('styles:toolkit', function () {
 	gulp.src(config.src.styles.toolkit)
     .pipe(postcss([
       stylelint(),
-      reporter({
-        formatter:
-      })
+      reporter()
     ], {
       syntax: postcss_scss
     }))
