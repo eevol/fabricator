@@ -13,8 +13,12 @@ var prefix = require('gulp-autoprefixer');
 var rename = require('gulp-rename');
 var reload = browserSync.reload;
 var runSequence = require('run-sequence');
+var postcss = require('gulp-postcss');
+var reporter = require('postcss-reporter');
+var postcss_scss = require('postcss-scss');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
+var stylelint = require('stylelint');
 var webpack = require('webpack');
 
 
@@ -61,9 +65,27 @@ gulp.task('styles:fabricator', function () {
 		.pipe(gulpif(config.dev, reload({stream:true})));
 });
 
+gulp.task('styles:toolkit:analyze', function () {
+	gulp.src(config.src.styles.toolkit)
+		.pipe(postcss([
+			stylelint(),
+			reporter()
+		], {
+			syntax: postcss_scss
+		}));
+})
+
 gulp.task('styles:toolkit', function () {
 	gulp.src(config.src.styles.toolkit)
-		.pipe(gulpif(config.dev, sourcemaps.init()))
+    .pipe(postcss([
+      stylelint(),
+      reporter({
+        formatter:
+      })
+    ], {
+      syntax: postcss_scss
+    }))
+    .pipe(gulpif(config.dev, sourcemaps.init()))
 		.pipe(sass().on('error', sass.logError))
 		.pipe(prefix('last 1 version'))
 		.pipe(gulpif(!config.dev, csso()))
